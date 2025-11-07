@@ -1,0 +1,875 @@
+/* DApp构建器 - 完整样式表 */
+
+/* ========== 全局样式 ========== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    background-color: #f8fafc;
+    color: #1a202c;
+    line-height: 1.6;
+    overflow: hidden; /* 防止页面滚动 */
+}
+
+/* ========== 顶部工具栏 ========== */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 100;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #2d3748;
+}
+
+.toolbar-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+/* ========== 按钮样式 ========== */
+/* 只对工具栏按钮应用默认样式，避免影响Tailwind类的按钮 */
+header button,
+.toolbar-buttons button,
+.toolbar-buttons label {
+    appearance: none;
+    border: 1px solid #cbd5e0;
+    background: #ffffff;
+    color: #4a5568;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-block;
+    text-align: center;
+}
+
+/* 默认按钮的hover效果 */
+header button:hover,
+.toolbar-buttons button:hover,
+.toolbar-buttons label:hover {
+    background: #f7fafc;
+    border-color: #a0aec0;
+}
+
+header button:active,
+.toolbar-buttons button:active {
+    transform: translateY(1px);
+}
+
+#generate-btn {
+    background: #3182ce;
+    color: #ffffff;
+    border-color: #3182ce;
+}
+
+#generate-btn:hover {
+    background: #2c5aa0;
+    border-color: #2c5aa0;
+}
+
+#project-settings-btn {
+    background: #ffffff;
+}
+
+/* ========== 主容器布局 ========== */
+main {
+    display: flex;
+    height: 100vh;
+    padding-top: 60px; /* 为固定头部留出空间 */
+    overflow: hidden;
+}
+
+/* ========== 三列布局 ========== */
+
+/* 左侧边栏 - 组件库 */
+#components-panel {
+    width: 250px;
+    background: #ffffff;
+    border-right: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#components-panel h2 {
+    margin: 0;
+    padding: 16px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #4a5568;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f7fafc;
+}
+
+#components-list {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* 组件样式 */
+.component-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: grab;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.component-item:hover {
+    background: #f7fafc;
+    border-color: #cbd5e0;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.component-item:active {
+    cursor: grabbing;
+    transform: translateY(0);
+}
+
+.component-item.dragging {
+    opacity: 0.5;
+    transform: rotate(5deg);
+}
+
+.component-icon {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+}
+
+.component-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #2d3748;
+}
+
+/* 中间画布 - 预览区域 */
+#preview-panel {
+    flex: 1;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* 确保预览面板可以接收拖放 */
+    position: relative;
+    z-index: 1;
+}
+
+#app-root {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+}
+
+/* 预览画布中的画布容器（恢复原来的布局） */
+#preview-panel #canvas {
+    flex: 1;
+    margin: 16px;
+    padding: 20px;
+    background-color: #fafafa;
+    border: 2px dashed #cbd5e0;
+    border-radius: 8px;
+    overflow-y: auto;
+    min-height: 0;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    /* 确保可以接收拖放 */
+    pointer-events: auto;
+    z-index: 1;
+}
+
+#preview-panel h2 {
+    margin: 0;
+    padding: 16px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #4a5568;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f7fafc;
+}
+
+#canvas {
+    flex: 1;
+    margin: 16px;
+    padding: 20px;
+    background-color: #fafafa;
+    border: 2px dashed #cbd5e0;
+    border-radius: 8px;
+    overflow-y: auto;
+    min-height: 0;
+    position: relative; /* 为绝对定位的组件提供定位上下文 */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    /* 确保可以接收拖放 */
+    pointer-events: auto;
+    z-index: 1;
+}
+
+#canvas:empty::before {
+    content: "拖拽组件到这里开始构建您的DApp";
+    color: #a0aec0;
+    font-size: 16px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+/* 右侧边栏 - 属性检查器 */
+#properties-panel {
+    width: 300px;
+    background: #ffffff;
+    border-left: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#properties-panel h2 {
+    margin: 0;
+    padding: 16px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #4a5568;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f7fafc;
+}
+
+#properties-inspector {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+}
+
+/* ========== 组件编辑样式 ========== */
+.editable-component {
+    transition: all 0.2s ease;
+}
+
+.editable-component:hover {
+    outline: 2px solid #3182ce;
+    outline-offset: 2px;
+}
+
+.selected-component {
+    outline: 2px solid #3182ce !important;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(49, 130, 206, 0.2);
+    border-color: #3182ce !important;
+    border-style: solid !important;
+}
+
+.hovered {
+    background-color: rgba(49, 130, 206, 0.05);
+}
+
+/* ========== 弹窗样式 ========== */
+#settings-modal,
+#login-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+#settings-modal.hidden,
+#login-modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    width: 100%;
+    max-width: 600px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f7fafc;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.close-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    color: #a0aec0;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+    background: #e2e8f0;
+    color: #4a5568;
+}
+
+.modal-body {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 20px 24px;
+    border-top: 1px solid #e2e8f0;
+    background: #f7fafc;
+}
+
+/* ========== 表单样式 ========== */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #4a5568;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    font-size: 14px;
+    background: #ffffff;
+    color: #2d3748;
+    transition: border-color 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #3182ce;
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+}
+
+.form-group textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+/* ========== 空状态样式 ========== */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #a0aec0;
+}
+
+.empty-state .empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.empty-state h3 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+.empty-state p {
+    margin: 0;
+    font-size: 14px;
+    color: #a0aec0;
+}
+
+/* ========== 属性面板样式 ========== */
+.properties-header {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.properties-header h3 {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.component-type {
+    font-size: 12px;
+    color: #a0aec0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.properties-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.property-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.property-group label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+.property-group input {
+    padding: 8px 10px;
+    font-size: 13px;
+}
+
+/* ========== 拖拽样式 ========== */
+.sortable-ghost {
+    opacity: 0.4;
+    background: #e2e8f0;
+}
+
+.sortable-chosen {
+    transform: scale(1.02);
+}
+
+.sortable-drag {
+    transform: rotate(5deg);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* ========== 上下文菜单样式 ========== */
+.component-context-menu {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 4px 0;
+    min-width: 120px;
+}
+
+.menu-item {
+    padding: 8px 16px;
+    font-size: 14px;
+    color: #4a5568;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.menu-item:hover {
+    background: #f7fafc;
+}
+
+/* ========== 消息提示样式 ========== */
+.success-toast,
+.loading-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 1001;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.success-toast {
+    background: #48bb78;
+    color: #ffffff;
+}
+
+.loading-message {
+    background: rgba(0, 0, 0, 0.8);
+    color: #ffffff;
+}
+
+.error-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #f56565;
+    color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 1001;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    max-width: 300px;
+}
+
+/* ========== 滚动条样式 ========== */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
+}
+
+/* ========== 响应式设计 ========== */
+@media (max-width: 1024px) {
+    #components-panel {
+        width: 200px;
+    }
+    
+    #properties-panel {
+        width: 250px;
+    }
+}
+
+@media (max-width: 768px) {
+    main {
+        flex-direction: column;
+    }
+    
+    #components-panel,
+    #properties-panel {
+        width: 100%;
+        height: 200px;
+    }
+    
+    #preview-panel {
+        flex: 1;
+        min-height: 300px;
+    }
+}
+
+/* ========== 工具类 ========== */
+.hidden {
+    display: none !important;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ========== 自由变换支持 ========== */
+/* 为所有可自由变换的组件设置绝对定位 */
+.resize-drag {
+    position: absolute;
+    cursor: move;
+    border: 2px dashed transparent;
+    transition: border-color 0.2s ease;
+}
+
+/* 鼠标悬停时显示蓝色虚线边框 */
+.resize-drag:hover {
+    border-color: #3182ce;
+}
+
+/* ========== 容器组件样式 ========== */
+.container-component {
+    /* 容器的基础样式已在 renderer.js 中定义，这里添加额外的支持 */
+    min-height: 100px;
+    position: relative;
+}
+
+/* ========== 排行榜组件样式 ========== */
+[data-component-type="leaderboard"] {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    overflow: hidden;
+    position: relative;
+}
+
+#leaderboard-list-container {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+    min-height: 0;
+    box-sizing: border-box;
+}
+
+/* ========== 任务列表组件样式 ========== */
+[data-component-type="task-list"] {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    overflow: hidden;
+}
+
+#tasks-container {
+    flex: 1;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+    min-height: 0;
+    box-sizing: border-box;
+}
+/* 注意：排行榜组件的样式已移至 renderer.js 中的内联样式，这里不再使用 !important 规则 */
+
+/* 容器作为 drop zone 时的样式 */
+.container-drop-zone {
+    /* 确保容器可以接收拖放 */
+    min-height: 100px;
+    position: relative;
+}
+
+/* 容器占位符样式 */
+.container-placeholder {
+    pointer-events: none; /* 不阻止拖放事件 */
+    user-select: none;
+}
+
+/* 容器内有组件时的样式 */
+.container-drop-zone > .resize-drag {
+    /* 容器内的组件也是绝对定位，可以自由移动 */
+    position: absolute;
+}
+
+/* ========== 抽奖结果弹窗样式 ========== */
+#lottery-result-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+#lottery-result-modal.hidden {
+    display: none;
+}
+
+/* ========== 抽奖动画样式 ========== */
+/* pop-in 动画定义 */
+@keyframes pop-in {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* 应用 pop-in 动画的类 */
+.play-animation {
+    animation: pop-in 0.5s ease-out forwards;
+}
+
+/* --- 全局按钮样式重置 --- */
+button {
+    border: none;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: transparent; /* 默认背景透明，由JS或Tailwind类控制 */
+}
+
+/* --- 草稿保存/加载消息提示动画 --- */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* ========== 任务列表组件拖拽支持 ========== */
+.task-list-component {
+    /* 确保任务列表组件可以正常拖拽 */
+    cursor: move;
+    /* 注意：position: absolute 由 .resize-drag 类提供，这里不覆盖 */
+}
+
+.task-list-component #tasks-container {
+    /* 确保内部容器不阻止拖拽 */
+    pointer-events: auto;
+}
+
+/* 确保任务列表组件的 Flexbox 布局不被覆盖 */
+.task-list-component.resize-drag {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* ========== 任务列表滚动条美化 ========== */
+#tasks-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+#tasks-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#tasks-container::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 3px;
+}
+
+#tasks-container::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
+}
+
+/* ========== 侧边栏导航布局 ========== */
+/* 注意：这些样式用于生成的DApp中，而不是构建器预览画布 */
+
+/* 应用布局容器（仅在生成的DApp中使用） */
+.app-layout {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+/* 侧边栏占位符或实际侧边栏（仅在生成的DApp中使用） */
+#sidebar-placeholder,
+#app-sidebar {
+    width: 250px;
+    flex-shrink: 0;
+    min-height: 100%;
+}
+
+/* 主内容区（仅在生成的DApp中使用） */
+#main-content-area {
+    flex-grow: 1;
+    min-height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* 确保侧边栏导航组件正确显示（固定定位，覆盖在画布上方） */
+.sidebar-nav-component {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 250px;
+    height: 100vh;
+    background: #ffffff;
+    border-right: 1px solid #e2e8f0;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    overflow-y: auto;
+}
