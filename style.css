@@ -196,7 +196,9 @@ main {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    min-height: 0;
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
 }
 
 /* 预览画布中的画布容器（恢复原来的布局） */
@@ -230,13 +232,14 @@ main {
 
 #canvas {
     flex: 1;
-    margin: 16px;
-    padding: 20px;
+    margin: 0 auto;
+    padding: 0;
     background-color: #fafafa;
     border: 2px dashed #cbd5e0;
     border-radius: 8px;
-    overflow-y: auto;
+    overflow: visible;
     min-height: 0;
+    min-width: 0;
     position: relative; /* 为绝对定位的组件提供定位上下文 */
     background-size: cover;
     background-position: center;
@@ -640,7 +643,9 @@ main {
 /* ========== 自由变换支持 ========== */
 /* 为所有可自由变换的组件设置绝对定位 */
 .resize-drag {
-    position: absolute;
+    position: absolute !important;
+    margin: 0 !important;
+    padding: 0 !important;
     cursor: move;
     border: 2px dashed transparent;
     transition: border-color 0.2s ease;
@@ -720,6 +725,10 @@ main {
 .container-drop-zone > .resize-drag {
     /* 容器内的组件也是绝对定位，可以自由移动 */
     position: absolute;
+}
+
+#canvas {
+    position: relative;
 }
 
 /* ========== 抽奖结果弹窗样式 ========== */
