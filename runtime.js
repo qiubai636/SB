@@ -1995,7 +1995,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const availableColumns = Math.max(1, Math.floor(canvas.clientWidth / minColumnWidth));
-        canvas.style.gridTemplateColumns = 'repeat(' + availableColumns + ', minmax(' + minColumnWidth + 'px, 1fr))';
+        const maxColumnsAttr = Number.parseInt(canvas.getAttribute('data-max-columns'), 10);
+        const maxColumns = Number.isFinite(maxColumnsAttr) ? Math.max(1, maxColumnsAttr) : availableColumns;
+        const columns = Math.max(1, Math.min(availableColumns, maxColumns));
+        canvas.style.gridTemplateColumns = 'repeat(' + columns + ', minmax(' + minColumnWidth + 'px, 1fr))';
         canvas.style.gridAutoFlow = 'row';
 
         canvas.querySelectorAll('.resize-drag').forEach(element => {
@@ -2009,7 +2012,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!Number.isFinite(span) || span < 1) {
                 span = 1;
             }
-            span = Math.min(span, availableColumns);
+            span = Math.min(span, columns);
             element.style.gridColumn = 'span ' + span + ' / span ' + span;
 
             const rowSpanAttr = element.getAttribute('data-layout-row-span');
