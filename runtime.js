@@ -1979,21 +1979,57 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.body.style.overflowY = 'auto';
 
-    canvas.querySelectorAll('.resize-drag').forEach(element => {
-        const orderAttr = element.getAttribute('data-layout-order');
-        if (Number.isFinite(parseInt(orderAttr, 10))) {
-            element.style.order = String(parseInt(orderAttr, 10));
+    const breakpoints = {
+        base: { minColumnWidth: 280 },
+        md: { minColumnWidth: 340 },
+        lg: { minColumnWidth: 400 }
+    };
+
+    function applyResponsiveColumns() {
+        const width = window.innerWidth;
+        let minColumnWidth = breakpoints.base.minColumnWidth;
+        if (width >= 1024) {
+            minColumnWidth = breakpoints.lg.minColumnWidth;
+        } else if (width >= 768) {
+            minColumnWidth = breakpoints.md.minColumnWidth;
         }
 
-        const spanAttr = element.getAttribute('data-layout-span');
-        const span = Number.isFinite(parseInt(spanAttr, 10)) ? parseInt(spanAttr, 10) : 1;
-        element.style.gridColumn = 'span ' + span + ' / span ' + span;
+        const availableColumns = Math.max(1, Math.floor(canvas.clientWidth / minColumnWidth));
+        canvas.style.gridTemplateColumns = 'repeat(' + availableColumns + ', minmax(' + minColumnWidth + 'px, 1fr))';
+        canvas.style.gridAutoFlow = 'row';
 
-        const componentType = element.getAttribute('data-component-type');
-        if (componentType === 'text' || componentType === 'paragraph' || componentType === 'header') {
-            element.style.height = 'auto';
-        }
-    });
+        canvas.querySelectorAll('.resize-drag').forEach(element => {
+            const orderAttr = element.getAttribute('data-layout-order');
+            if (Number.isFinite(parseInt(orderAttr, 10))) {
+                element.style.order = String(parseInt(orderAttr, 10));
+            }
+
+            const spanAttr = element.getAttribute('data-layout-span');
+            let span = Number.parseInt(spanAttr, 10);
+            if (!Number.isFinite(span) || span < 1) {
+                span = 1;
+            }
+            span = Math.min(span, availableColumns);
+            element.style.gridColumn = 'span ' + span + ' / span ' + span;
+
+            const rowSpanAttr = element.getAttribute('data-layout-row-span');
+            let rowSpan = Number.parseInt(rowSpanAttr, 10);
+            if (!Number.isFinite(rowSpan) || rowSpan < 1) {
+                rowSpan = 1;
+            }
+            element.style.gridRow = 'span ' + rowSpan + ' / span ' + rowSpan;
+
+            element.style.minWidth = '0';
+
+            const componentType = element.getAttribute('data-component-type');
+            if (componentType === 'text' || componentType === 'paragraph' || componentType === 'header') {
+                element.style.height = 'auto';
+            }
+        });
+    }
+
+    applyResponsiveColumns();
+    window.addEventListener('resize', applyResponsiveColumns);
 });
 
 /**
