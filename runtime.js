@@ -1970,41 +1970,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('Solana DApp初始化完成');
 });
 
-// 极简高度补偿，避免画布坍塌，并恢复 transform
+// 极简高度补偿，避免画布坍塌并应用布局顺序
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('canvas');
     if (!canvas || canvas.children.length === 0) {
         return;
     }
 
+    document.body.style.overflowY = 'auto';
+
     canvas.querySelectorAll('.resize-drag').forEach(element => {
-        const xAttr = element.getAttribute('data-x');
-        const yAttr = element.getAttribute('data-y');
-        const x = Number.isFinite(parseFloat(xAttr)) ? parseFloat(xAttr) : 0;
-        const y = Number.isFinite(parseFloat(yAttr)) ? parseFloat(yAttr) : 0;
-        element.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+        const orderAttr = element.getAttribute('data-layout-order');
+        if (Number.isFinite(parseInt(orderAttr, 10))) {
+            element.style.order = String(parseInt(orderAttr, 10));
+        }
+
+        const spanAttr = element.getAttribute('data-layout-span');
+        const span = Number.isFinite(parseInt(spanAttr, 10)) ? parseInt(spanAttr, 10) : 1;
+        element.style.gridColumn = 'span ' + span + ' / span ' + span;
 
         const componentType = element.getAttribute('data-component-type');
         if (componentType === 'text' || componentType === 'paragraph' || componentType === 'header') {
             element.style.height = 'auto';
         }
     });
-
-    let maxBottom = 0;
-    let maxRight = 0;
-    for (const component of canvas.children) {
-        const bottom = component.offsetTop + component.offsetHeight;
-        const right = component.offsetLeft + component.offsetWidth;
-        if (bottom > maxBottom) {
-            maxBottom = bottom;
-        }
-        if (right > maxRight) {
-            maxRight = right;
-        }
-    }
-
-    canvas.style.minHeight = String(maxBottom + 50) + 'px';
-    canvas.style.minWidth = String(maxRight + 50) + 'px';
 });
 
 /**
